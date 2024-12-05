@@ -1,0 +1,15 @@
+package org.sist.sb04_oracle_mybatis_jsp.service;
+
+import java.util.List;
+
+import org.sist.sb04_oracle_mybatis_jsp.domain.DeptVO;
+
+public class DeptServiceImpl implements DeptService{
+
+	@Override
+	public List<DeptVO> getDeptList() throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <!-- DAOImpl과 똑같은 파일이다. 대체하는것! -->
+
+  <!-- Mapper 파일. 위치는 리소스 폴더가 아니여도 됨.. -->
+  
+  <!-- 폴더명,파일명 복붙! -->
+<mapper namespace="org.sist.sb03_jpa_oracle.persistence.TimeMapper">
+	<!-- id는 메서드이름, 세미콜론 xxxxx -->
+	<select id="getTimeXML" resultType="String"> 
+	<!-- select문이니까 select태그 줌. 업데이트면 <update> 와 쿼리를 주면 알아서 스프링이 DAOImpl을 내부에서 만듦 -->
+	
+		<!-- 쿼리넣기 -> 객체가 생성됨(root-context.xml의 그래프에서 확인가능) -->
+		select sysdate
+		from dual
+	</select>
+</mapper>

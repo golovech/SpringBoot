@@ -1,0 +1,26 @@
+package org.sist.sb03_jpa_oracle.domain;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+@Entity // pom.xml에 jpa 추가하고, 프로펄티에서도 추가해줘야 사용가능
+@Table(name="tbl_sample") // name안주면, 클래스명이 테이블명이 됨
+public class Sample {
+
+	@Id // sno를 PK로 사용
+	// @GeneratedValue(strategy = GenerationType.IDENTITY) // 시퀀스처럼 sno가 자동 증가
+	private Long sno;
+	
+	private String col1;
+	private String col2;
+	
+}

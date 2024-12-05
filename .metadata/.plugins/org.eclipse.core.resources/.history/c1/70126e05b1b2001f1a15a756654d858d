@@ -1,0 +1,16 @@
+package org.sist.sb04_oracle_mybatis_jsp.domain;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
+@Data
+@Getter
+@Setter
+public class DeptVO {
+	
+	private int deptno;
+	private String dname;
+	private String loc;
+
+}
