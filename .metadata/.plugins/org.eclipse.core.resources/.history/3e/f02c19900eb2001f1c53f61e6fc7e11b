@@ -1,5 +1,0 @@
-package org.sist.sb02_mybatis.persistence;
-
-public interface TimeMapper {
-
-}
