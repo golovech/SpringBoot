@@ -1,0 +1,35 @@
+package org.sist.sb06_sbb3.question;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+//												(어떤 엔티티와 연관되어있는지 명시)
+//														   객체, 그 클래스 PK의 자료형
+public interface QuestionRepository extends JpaRepository<Question, Integer> {
+	
+	// crud메서드가 이미 내장되어있는 상태임.
+	Question findBySubject(String subject);
+	
+	// 1. Query method
+	//  find + 검색어 + Containing
+	List<Question> findBySubjectContaining(String subject);
+	
+	// 2. @query 어노테이션 사용~
+	/*
+	@Query("select q from question q where q.subject like %:subject%") // 객체를 사용하는 쿼리임. (jpql)
+	List<Question> findBySubjectLike(@Param("subject") String subject);
+	*/
+	
+	// 2-2 쿼리 메서드 사용~
+	List<Question> findBySubjectLike(String subject);
+	
+	// where subject =? AND content=?    OR도 가능하고...
+	Question findBySubjectAndContent(String subject, String content);
+	
+	// 3. 쿼리 DSL - 동적쿼리 작업할때 사용해야함.
+	
+	
+}
