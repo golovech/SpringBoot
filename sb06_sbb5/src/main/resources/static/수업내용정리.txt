@@ -1,0 +1,47 @@
+[수업내용정리]
+sb06_sbb5
+
+
+1.
+** 스프링 시큐리티 설치!! **
+
+	1) build.gradle 에 추가
+	
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    
+    ----------------
+    
+    2) 시큐리티 설정
+    SecurityConfig.java 추가
+    
+    
+2. h2-콘솔
+
+   접근권한없음(403)오류가 뜨는군.
+   오류 원인?? 스프링 시큐리티 CSRF 처리를 해줘야함!
+   
+   .csrf((csrf) -> csrf
+                .ignoringRequestMatchers(new AntPathRequestMatcher("/h2-console/**")))
+                
+   -> 붙이니, h2 접속은 되지만 화면이 깨져서 출력됨.
+      보안처리 하기 위함임. 스크림 부트에서는 X-Frame-Option 헤더 사용하여 공격 막음.
+      
+      .headers((headers) -> headers
+                .addHeaderWriter(new XFrameOptionsHeaderWriter(
+                    XFrameOptionsHeaderWriter.XFrameOptionsMode.SAMEORIGIN)))
+                    
+                 ->   를 추가하니까 잘 됨.
+   
+3. 회원 가입 기능 구현
+
+   - 회원(SiteUser) 엔티티 생성
+   username  회원이름/아이디
+   password  비밀번호
+   email     이메일
+   
+   - user 패키지 생성
+   
+   
+3-2. UserRepository 인터페이스
+   

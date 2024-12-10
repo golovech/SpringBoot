@@ -49,7 +49,16 @@ sb06_sbb2
    엔터티 사용 x, DTO 사용해보자.  
    
    
-   --> 내일은 답변등록 해보자~
+6. 답변 등록
+   
+   
+   --> th:object="${answerForm}"
+   
+   create.html , detail.html 에 공통으로 사용하는 템플릿이니까,, 따로 빼버리자!
+   [공통 템플릿] form_errors.html
+        <div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+       		<div th:each="error : ${#fields.allErrors()}" th:text="${error}"></div>
+        </div>
    
    
    

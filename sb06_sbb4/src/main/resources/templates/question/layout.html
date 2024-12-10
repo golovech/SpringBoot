@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>★ Sist5 SSB ★</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet" type="text/css" th:href="@{/bootstrap/bootstrap.min.css}">
+<!-- sbb CSS -->
+<link rel="stylesheet" type="text/css" th:href="@{/style.css}">
+</head>
+<body>
+<!-- 사이드바 -->
+<nav th:replace="~{/question/navbar::navbarFragment}"></nav>
+<!-- // 사이드바 -->
+<!-- 기본 템플릿 안에 들어갈 내용 -->
+<th:block layout:fragment="content"></th:block>
+<!-- // 기본 템플릿 안에 들어갈 내용 -->
+
+<!-- bootstrap JS -->  
+<script th:src="@{/bootstrap/bootstrap.min.js}"></script>
+  
+
+</body>
+</html>

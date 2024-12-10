@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link rel="shortcut icon" type="image/x-icon" href="images/SiSt.ico">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" type="text/css" th:href="@{/bootstrap/bootstrap.min.css}">
+</head>
+<body>
+	<div class="container my-3">
+	  <h1>/question/list.html</h1>
+	  <table class="table">
+		<thead class="dark">
+			<tr>
+				<th>번호</th>
+				<th>제목</th>
+				<th>작성일시</th>
+			</tr>
+		</thead>
+		<tbody>
+			<!-- 타임리프속성 주기. c:forEach 처럼, controller의 model에 담긴것 사용가능. -->
+			<tr th:each="question, loop : ${questionList}"> 
+				<!-- each 에서 준 이름과(question), 그 아래에서 사용하는 이름(question)이 같아야함. -->
+				<td th:text="${loop.count}"></td>
+				<!--<td th:text="${question.subject}"></td>-->
+				<!--<td><a th:href="@{/question/detail/${question.id}}" th:text="${question.subject}"></a></td>-->
+				<td><a th:href="@{|/question/detail/${question.id}|}" th:text="${question.subject}"></a></td>
+				<!-- id값 들고 가야함. ${} 로 , 컨트롤러, 리포, 클래스의 값 가져옴. -->
+				<!--<td th:text="${question.createDate}"></td>-->
+					<!--#temporals.format()	-->		
+					<td th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd hh:mm:ss')}"></td>
+			</tr>
+		</tbody>
+	  </table>
+	</div>
+</body>
+</html>

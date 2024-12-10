@@ -10,7 +10,10 @@ import org.springframework.data.repository.query.Param;
 //														   객체, 그 클래스 PK의 자료형
 public interface QuestionRepository extends JpaRepository<Question, Integer> {
 	
-	// crud메서드가 이미 내장되어있는 상태임.
+	// crud메서드가 이미 내장되어있는 상태임. 
+	//   ==> create작업은 이미 내장되어있으니까 구현할 필요 xx
+	// findAll 등등.. 도 crud임. 바로쓸수있는것임.
+	
 	Question findBySubject(String subject);
 	
 	// 1. Query method
@@ -19,7 +22,8 @@ public interface QuestionRepository extends JpaRepository<Question, Integer> {
 	
 	// 2. @query 어노테이션 사용~
 	/*
-	@Query("select q from question q where q.subject like %:subject%") // 객체를 사용하는 쿼리임. (jpql)
+	@Query("select q from Question q where q.subject like %:subject%") // 객체를 사용하는 쿼리임. (jpql == 엔티티 객체로 쿼리날리는.)
+					// 대소문자 구별 필수!!
 	List<Question> findBySubjectLike(@Param("subject") String subject);
 	*/
 	

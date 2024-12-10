@@ -1,0 +1,55 @@
+[수업내용정리]
+sb06_sbb2
+
+1. html 구조 변경
+   페이지 모듈화.  
+      
+    * 만약, html 문서구조의 body를 제외한 모든 부분이 동일해서 중복된다면?
+      타임리프 : 중복을 제거하기 위해 [템플릿 상속]기능을 제공한다. 
+  	    ㄴ 1) 기본 틀이 되는 템플릿을 먼저 작성
+  	    ㄴ 2) 그 작성된 템플릿을 상속해서 html를 구조 완성한다.
+  
+   1)
+	  ㄱ. 기본 틀 : layout.html 만들자.
+	  ㄴ.            ㄴ 상속  : detail.html
+	  				list.html
+  				
+   2)
+	   <html layout:decorate="">
+	   타임리프의 이 속성은, 템플릿 레이아웃(부모템플릿, layout.html)으로 사용할 템플릿을 지정한다.
+	   "" 를 상속받겠다는뜻.
+	   
+2. 질문 등록
+   list.html
+   a 링크태그 추가
+     <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+     
+     
+3. @{/question/create} 컨트롤러 메서드 추가
+
+4. Spring Boot Validation (유효성 검사)
+
+   1) 라이브러리 설치
+   - https://beanvalidation.org/ 참고(개념)
+   
+   build.gradle 에
+   implementation 'org.springframework.boot:spring-boot-starter-validation' 
+   추가
+   
+   @NotNull(message = "이름은 필수 항목입니다.") -> null이면 메세지 출력.
+   @Size(min = 8, max = 20) 
+   @Pattern
+   @Valid 
+   @Validated
+   
+   public String createUser(@Valid @RequestBody User user, BindingResult result) {
+    => User객체의 유효성 검사를 해줌. BindingResult 이 바로 뒤에 있어야 함.
+	  				
+5. 질문 등록 폼 => QuestionForm.java == DTO
+   엔터티 사용 x, DTO 사용해보자.  
+   
+   
+   --> 내일은 답변등록 해보자~
+   
+   
+   

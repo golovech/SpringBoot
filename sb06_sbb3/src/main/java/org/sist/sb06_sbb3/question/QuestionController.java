@@ -2,6 +2,7 @@ package org.sist.sb06_sbb3.question;
 
 import java.util.List;
 
+import org.sist.sb06_sbb3.answer.AnswerForm;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @Controller
 @RequestMapping("/question/*")
 
-@RequiredArgsConstructor // autowired 말고 final 붙일때 이게 필요함!!
+@RequiredArgsConstructor // final
 public class QuestionController {
 	
 	// private final QuestionRepository questionRepository; // 주입
@@ -43,17 +44,11 @@ public class QuestionController {
 	// 질문 상세 보기
 	// localhost/question/detail/2
 	@GetMapping("detail/{id}") // Question.java 의 컬럼값.
-	public String detail(@PathVariable("id") Integer id, Model model) { 
+	public String detail(@PathVariable("id") Integer id, Model model, 
+						AnswerForm answerForm) {  // 여기에도 AnswerForm 넣어줘야함.
 		Question question = this.questionService.getQuestion(id);
 		model.addAttribute("question", question);
 		return "question/detail";
-		
-	}
-	
-	// 질문 등록하기
-	//  <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
-	@GetMapping("/create") 
-	public void questionCreate(QuestionForm questionForm) {  // 유효성 검사할때 여기에도 매개변수값 넣어줘야함.
 		
 	}
 
@@ -74,6 +69,14 @@ public class QuestionController {
 	}
 	*/
 	
+	
+	// 질문 등록하기
+	//  <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+	@GetMapping("/create") 
+	public void questionCreate(QuestionForm questionForm) {  
+		// 유효성 검사할때 여기에도 매개변수값 넣어줘야함.
+		
+	}
 	
 	// 2.
 	// 질문 등록하기 (유효성 검사 자동)

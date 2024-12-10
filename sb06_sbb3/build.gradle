@@ -25,8 +25,9 @@ repositories {
 }
 
 dependencies {
+
+	// web 체크해서 들어있는 것. 필수적이다?
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	
 	
 	// 롬복
 	compileOnly 'org.projectlombok:lombok'

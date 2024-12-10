@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+// DTO 임.
+
 @Setter
 @Getter
 public class QuestionForm {
