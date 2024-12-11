@@ -9,19 +9,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Setter
 @Getter
+@Entity
 public class Notice {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(length = 100)
+	@Column(length = 200)
 	private String title;
 	
 	@Column(length = 50)
@@ -32,13 +33,16 @@ public class Notice {
 	
 	private LocalDateTime createDate;
 	
+	@Column(columnDefinition = "integer default 0", nullable = false)
 	private Integer view;
 	
+	@Email
 	private String email;
 	
-	private MultipartFile uploadFile;
+	// 이건 일단 출력부터하고 나중에 해보자
+	//private MultipartFile uploadFile;
 	
-	private boolean fix;
+	private Boolean fix;
 	
 	
 

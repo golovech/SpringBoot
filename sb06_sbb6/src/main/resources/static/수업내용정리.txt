@@ -1,0 +1,51 @@
+[수업내용정리]
+
+sb06_sbb6
+
+1. 질문, 답변 수정과 삭제 기능 추가
+   각 엔티티에 수정날짜 추가.
+   
+2. 질문상세보기 
+    detail.html - 질문 수정 버튼 추가
+	questionController
+	create.html 수정코딩
+	
+	th:if="${question.author != null and #authentication.getPrincipal().getUsername() == question.author.username}"
+	인증받은 사용자 이름 가져오기..
+	
+	컨트롤러, 서비스 코딩 수정 하자.
+	
+	
+3. 질문 삭제
+   detail.html 
+   
+	아래 코딩을 fragment 조각으로 만들어서.. layout.html의 원하는 위치에 끼워넣자. <th:block>사용.
+	
+	<script type='text/javascript'>
+	const delete_elements = document.getElementsByClassName("delete");
+	Array.from(delete_elements).forEach(function(element) {
+	    element.addEventListener('click', function() {
+	        if(confirm("정말로 삭제하시겠습니까?")) {
+	            location.href = this.dataset.uri;
+	        };
+	    });
+	});
+	</script>
+	 
+	질문삭제 컨트롤러 / 서비스	 
+	
+	
+------------ 질문 수정 / 삭제 작업 ---------------
+
+  이제 답변 수정, 답변 삭제 하자!!
+  
+  - 모든게 answer이면 된다.
+  
+  - 수정일자 출력.
+  
+  내일할것) 좋아요/추천기능 구현
+  검색기능.
+	 	 
+	 	 
+ 	 
+   

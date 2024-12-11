@@ -1,9 +1,14 @@
 package org.sist.sb06_sbb5.question;
 
+import java.security.Principal;
+
 import org.sist.sb06_sbb5.answer.AnswerForm;
 import org.sist.sb06_sbb5.page.Criteria;
 import org.sist.sb06_sbb5.page.PageDTO;
+import org.sist.sb06_sbb5.user.SiteUser;
+import org.sist.sb06_sbb5.user.UserService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -24,6 +29,7 @@ public class QuestionController {
 	
 	// private final QuestionRepository questionRepository; // 주입
 	private final QuestionService questionService;
+	private final UserService userService;
 
 	/*
 	// 호출하는 용도로 사용.
@@ -103,7 +109,7 @@ public class QuestionController {
 	
 	
 	// 질문 등록하기
-	//  <a th:href="@{/question/create}" class="btn btn-primary">질문 등록하기</a>
+	@PreAuthorize("isAuthenticated()") // 글쓰기 전 권한을 물어보는 어노테이션. 로그인 안하면 로그인페이지로 이동.
 	@GetMapping("/create") 
 	public void questionCreate(QuestionForm questionForm) {  
 		// 유효성 검사할때 여기에도 매개변수값 넣어줘야함.
@@ -112,10 +118,11 @@ public class QuestionController {
 	
 	// 2.
 	// 질문 등록하기 (유효성 검사 자동)
+	@PreAuthorize("isAuthenticated()") // 글쓰기 전 권한을 물어보는 어노테이션. 로그인 안하면 로그인페이지로 이동.
 	@PostMapping("/create") 
 	public String questionCreate(
-			@Valid QuestionForm questionForm, BindingResult bindingResult  // @Valid + BindingResult는 짝꿍이다.
-			) { 
+			@Valid QuestionForm questionForm, BindingResult bindingResult,  // @Valid + BindingResult는 짝꿍이다.
+			Principal principal) { 
 		// 1. 유효성검사에 에러 있는지 확인
 		if(bindingResult.hasErrors()) { // 에러 있으면?
 			return "question/create"; // 다시 포워딩
@@ -123,12 +130,12 @@ public class QuestionController {
 		// 에러 없으면
 		String subject = questionForm.getSubject();
 		String content = questionForm.getContent();
-		this.questionService.create(subject, content);
+		
+		SiteUser siteUser = this.userService.getUser(principal.getName()); // siteUser 넘긴 다음에, create 에 변수 추가 가능하다.
+		this.questionService.create(subject, content, siteUser);
 		
 		// 2. 질문 목록으로 리다이렉트.
 		return "redirect:/question/list";
 	}
-	
-	
 	
 }

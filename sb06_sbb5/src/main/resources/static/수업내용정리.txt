@@ -44,4 +44,62 @@ sb06_sbb5
    
    
 3-2. UserRepository 인터페이스
+ 	 UserService.java 생성
+ 	 
+ 	 회원가입 페이지 만들고 -> UserCreateForm.java(DTO) 만들어 UserController 에서 작업할 것이다.
+ 	 
+4. 네비게이션 바 - 로그인 옆에 회원가입 추가
+
+5. 이미 등록된 id/email 로 회원가입하려하면 -> UK제약조건 걸려서 오류메세지 남.
+  -> 에러메세지 출력 후 다시 회원가입창으로 이동
+  
+6. 로그인/로그아웃 구현
+
+7. 사용자 정의 인증처리방식
+
+   UserSecurityService.java 클래스 생성 	 
+   
+   -----------------------------------
+   
+8. 질문/답변 - 작성자 처리. 로그인 한 작성자 나오게 하려면!!
+
+	Answer.java
+	Question.java 엔티티에 컬럼 추가. 
+	 ㄴ @manytoone 
+		private SiteUser author;
+	
+	author_id 컬럼 == 작성자ID SiteUser  PK
+	
+	1) 답변 작성자 먼저 작업
+	   컨트롤러, 서비스 수정
+	   
+	   - AnswerController.java 에서
+	   createAnswer 수정.
+	   
+	2) 질문 작성자 처리
+	   컨트롤러, 서비스 수정..
+ 	 
+ 	 3) 설정 추가
+ 	 어노테이션~!!
+ 	 
+ 	 - 질문, 답변 create 메서드마다 추가
+ 	 @PreAuthorize("isAuthenticated()") 
+ 	 
+ 	 - SecurityConfig.java에 추가
+ 	 @EnableMethodSecurity(prePostEnabled = true)
+ 	 
+ 	 얘네들 추가 안하면 시큐리티 적용안됨.
+ 	 
+ 	 
+ 	 detail.html 에
+ 	  sec:authorize="isAnonymous()" 추가. (답글 작성 가능한 곳에 넣기)
+ 	 
+ 9. 질문 상세에 작성자 표시를 추가하자!
+    
+  	 
+ 	 
+ 	 
+ 	 
+ 	 
+ 	 
    

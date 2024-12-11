@@ -1,0 +1,73 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.0'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'org.sist'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+// 의존모듈 관리하는 리파지토리
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+
+	// web 체크해서 들어있는 것. 필수적이다?
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	
+	// 롬복
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	
+	// devtools
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	
+	// 타임리프
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect'
+    
+    // h2 DB 사용~
+    runtimeOnly 'com.h2database:h2'
+    
+    /* JPA 사용  
+    implementation  -  필요한 라이브러리 설치를 위한, 일반적인 옵션
+					   이 라이브러리와 관련된 모든 모듈을 컴파일 하지 않고,
+				  	   변경된 내용과 관련된 모듈만 컴파일 한다는 뜻.
+					   프로젝트의 빌딩하는 속도가 빠르다. */
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' 
+    
+    // Junit 사용
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    
+    // 유효성 검사.
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    
+    // 스프링 시큐리티 모듈
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    
+    // 타임리프 템플릿 엔진 + 스프링 시큐리티 프레임워크를 
+    // 함께 사용할때 필요한 타임리프의 확장기능 모듈
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    
+    // 반드시 여기 코딩 수정시 refresh gradle project ~~!!!!!!
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

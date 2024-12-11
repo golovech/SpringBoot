@@ -3,6 +3,7 @@ package org.sist.sb06_sbb5.answer;
 import java.time.LocalDateTime;
 
 import org.sist.sb06_sbb5.question.Question;
+import org.sist.sb06_sbb5.user.SiteUser;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,5 +33,8 @@ public class Answer {
 	@ManyToOne // n:1
 	private Question question ; // FK로 줄거라면(조인), 우리가 만든 Question.java를 줘야함!! 
 								// 실제 생성된 컬럼명 : question_id
+	
+	@ManyToOne // 한명이 여러개의 답변을 달수 있음.
+	private SiteUser author;
 }
  

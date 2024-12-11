@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.sist.sb06_sbb5.answer.Answer;
+import org.sist.sb06_sbb5.user.SiteUser;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -12,6 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,5 +40,9 @@ public class Question {
 				// fetch = FetchType.EAGER : 즉시 방식으로 가져옴. 단위테스트할때 유용하다고 함
 	@OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER) 
 	private List<Answer> answerList; // 하나의 질문에 여러개의 답변을 담기 위해.
+	
+	@ManyToOne
+	private SiteUser author;
+	
 	
 }

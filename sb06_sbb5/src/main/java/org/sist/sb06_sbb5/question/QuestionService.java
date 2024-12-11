@@ -1,11 +1,13 @@
 package org.sist.sb06_sbb5.question;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.sist.sb06_sbb5.exception.DataNotFoundException;
+import org.sist.sb06_sbb5.user.SiteUser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,11 +40,15 @@ public class QuestionService {
 	}
 	
 	// 질문 등록하는 메서드
-	public void create(String subject, String content) {
+	public void create(String subject, String content, SiteUser user) { // 질문작성자 추가.
 		Question question = new Question();
+		//SiteUser siteUser = new SiteUser();
 		question.setSubject(subject);
 		question.setContent(content);
 		question.setCreateDate(LocalDateTime.now());
+		
+		question.setAuthor(user); // 추가
+		
 		this.questionRepository.save(question);
 	}
 	
