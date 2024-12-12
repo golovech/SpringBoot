@@ -1,0 +1,29 @@
+<!-- 기본 틀 상속 받을게 -->
+<html layout:decorate="~{/question/layout}">
+	
+<div layout:fragment="content" class="container my-3">
+
+ <form th:action="@{/user/login}" method="post">
+ 
+ <!-- 스프링 시큐리티에서 로그인 실패하면 localhost/user/login?error로 자동으로 가게 만들어 -->
+      <div th:if="${param.error}"><!-- 파라미터로 error가 넘어온다면~ -->
+          <div class="alert alert-danger">
+              사용자ID 또는 비밀번호를 확인해 주세요.
+          </div>
+      </div>
+      <div class="mb-3">
+          <label for="username" class="form-label">사용자ID</label>
+          <input type="text" name="username" id="username" class="form-control">
+      </div>
+      <!-- username 그대로 쓰자 이메일이든 id든 이름이든 다 이거여야 해-->
+      <div class="mb-3">
+          <label for="password" class="form-label">비밀번호</label>
+          <input type="password" name="password" id="password" class="form-control">
+      </div>
+      <!-- password도 그대로 쓰자 -->
+      <button type="submit" class="btn btn-primary">로그인</button>
+  </form>
+  
+</div>   
+	
+</html>

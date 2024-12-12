@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,12 +33,12 @@ public class Notice {
 	@Column(columnDefinition = "TEXT")
 	private String content;
 	
+	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime createDate;
 	
 	@Column(columnDefinition = "integer default 0", nullable = false)
-	private Integer view;
+	private Integer viewCount;
 	
-	@Email
 	private String email;
 	
 	// 이건 일단 출력부터하고 나중에 해보자

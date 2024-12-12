@@ -57,6 +57,13 @@ dependencies {
     // 유효성 검사.
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     
+    // 스프링 시큐리티 모듈
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    
+    // 타임리프 템플릿 엔진 + 스프링 시큐리티 프레임워크를 
+    // 함께 사용할때 필요한 타임리프의 확장기능 모듈
+    implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    
     // 반드시 여기 코딩 수정시 refresh gradle project ~~!!!!!!
 }
 

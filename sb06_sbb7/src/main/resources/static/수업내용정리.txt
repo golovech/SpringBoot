@@ -1,0 +1,112 @@
+[수업 내용 정리]
+
+1. 좋아요 / 추천 기능
+	질문 추천(좋아요)
+	답변 추천(좋아요)
+	
+	a. 질문 entity, 답변 entity에 누가 눌렀는지 확인하기 위해 추천인을 저장하자
+		@ManyToMany	//답변과 회원은 M:N 이처럼 M:N일 때는 테이블이 하나 만들어져 확인할 것 PK가 복합키야
+		private Set<SiteUser> voter;//좋아요는 한 번 밖에 못 누르니까 Set으로
+		
+	b. detail.html
+		질문에 추천 버튼 추가
+	c. 추천 요청에 의한 Service와 Controller 수정
+		th:data-uri="@{|/question/vote/${question.id}|}">니까
+		/question/vote/2 뭐 이런 식으로 요청이 날아가겠지
+		
+		Service
+		public void vote(Question question, SiteUser siteUser) {//사실 id만 와도 되는데 객체 단위로 넘어가
+		
+		그냥 쿼리 날렸다면 질문id에 추천인 id가 눌렀다고 insert할텐데 왜 이렇게 했는지?
+		-> Question 객체의 Set 안에 add 해서 그 SiteUser를 추가하겠다.
+		update 이런 거 아니고 그냥 Repository에서 save()
+		두 번 누르면 비추천 되게-> Service에서 분기 나눠서 이미 Set 안에 데이터가 있을 경우에 delete() 호출하면 돼
+
+2. 앵커 기능
+	항상 스크롤이 상단 -> 새로 달린 답변으로 스크롤을 이동
+	<a top="">[위로]
+
+3. 마크다운 적용
+	답변 / 질문 서식이 있는 text형태로 출력
+	
+	a. module 설치
+		//markdown module
+    	implementation 'org.commonmark:commonmark:0.21.0'
+    
+    b. 일반 텍스트 -> 마크다운 적용된 text로 변환해주는 library 선언
+    	util.CommonUtil.java 추가
+    
+    c. detail.html에서 질문 내용, 답변 내용 출력할 때 일반 문자열 -> markdown 적용된 문자열로 출력
+    
+    
+4. 검색 기능
+	일반 쿼리로 가정한다면,  
+	select
+	    distinct q.id,
+	    q.author_id,
+	    q.content,
+	    q.create_date,
+	    q.modify_date,
+	    q.subject 
+	from question q 
+	left outer join site_user u1 on q.author_id=u1.id 
+	left outer join answer a on q.id=a.question_id 
+	left outer join site_user u2 on a.author_id=u2.id 
+	where
+	    q.subject like '%스프링%' 
+	    or q.content like '%스프링%' 
+	    or u1.username like '%스프링%' 
+	    or a.content like '%스프링%' 
+	    or u2.username like '%스프링%' 
+
+	JPA를 사용해서 여러 테이블에 JOIN 하여 검색 할 때에는 Specification interface를 사용하면 편리하다
+	Specification interface는 DB검색을 더 유연하게 해주고 복잡한 검색 조건도 처리해준다.
+	
+	QuestionRepository
+	 	ㄴ Page<Question> findAll(Specification<Question> spec, Pageable pageable);
+	 	Specification<Question> spec 선언
+	 	
+		이건 Question Service에서만 사용할 거잖아? 그러니까 class로 따로 빼서 호출해도 되지만
+		
+		Question Service 안에
+			Specification<Question> 객체 생성해서 검색할 때 들어가는 매개변수를 돌려주는 search(){} 만들거야.
+			이제 @Query도 써보자(이 annotation은 절대 권장하지 않아... 이럴거면 왜 jpa 씀?)
+
+
+		private Specification<Question> search(String kw) {//매개변수로 검색어
+		
+        return new Specification<>() {//interface를 annonymous class로 객체 생성해서 return, 이 interface의 toPredicate가 abstract method로 있어
+            private static final long serialVersionUID = 1L;
+            @Override
+            public Predicate toPredicate(Root<Question> q, CriteriaQuery<?> query, CriteriaBuilder cb) {//generic에 의해 만들어져
+            	//JPA 안의 function으로 JPQL 만들어!
+                query.distinct(true);  // 중복을 제거 
+                Join<Question, SiteUser> u1 = q.join("author", JoinType.LEFT);
+                Join<Question, Answer> a = q.join("answerList", JoinType.LEFT);
+                Join<Answer, SiteUser> u2 = a.join("author", JoinType.LEFT);
+                return cb.or(cb.like(q.get("subject"), "%" + kw + "%"), // 제목 
+                        cb.like(q.get("content"), "%" + kw + "%"),      // 내용 
+                        cb.like(u1.get("username"), "%" + kw + "%"),    // 질문 작성자 
+                        cb.like(a.get("content"), "%" + kw + "%"),      // 답변 내용 
+                        cb.like(u2.get("username"), "%" + kw + "%"));   // 답변 작성자 
+            }
+        };
+    }
+    
+    list.html 페이징 블럭 수정 + js 부분 해야해~~
+    WHY?
+    	ㄴ 검색버튼(찾기) 버튼 클릭할 때 검색어인 kw를 가지고 가면서 현재 페이지 번호도 가지고 가야해
+    	<form th:action="@{/question/list}" method="get" id="searchForm">
+        	<input type="hidden" id="kw" name="kw" th:value="${kw}">
+        	<input type="hidden" id="page" name="page" th:value="${paging.number}"><!-- script로 코딩하려고 이케 한거임 -->
+    	</form>
+    	form.submit(); js로 처리
+    	
+    	
+    	
+    	
+[금요일]
+QueryDSL
+
+[월요일]
+Spring 총정리

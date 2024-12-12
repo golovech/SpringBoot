@@ -1,0 +1,56 @@
+<!-- 기본 틀 상속 받을게 -->
+<html layout:decorate="~{/question/layout}">
+<!-- .html은 생략해도 layout template .html인 걸 알아 -->
+
+<div layout:fragment="content" class="container my-3">
+	<h1>/question/create.html</h1>
+	<br>
+
+	<h5 class="my-3 border-bottom pb-2">질문등록</h5>
+	<!-- <form th:action="@{/question/create}" method="post"> -->
+	
+	<form th:object="${questionForm}" method="post">
+	<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+	 
+	<!--
+			반드시 th:object 속성 설정해야한다 
+			<form>의 입력 항목들이 QuestionForm과 연결된다는 걸 Thymeleaf에 알려주는 역할
+	-->
+	
+	
+	
+	<!-- 유효성 검사 실패 메시지 출력 -->
+	<!--
+	 <div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}"> class="alert alert-danger" role="alert"는 bootstrap 속성값
+	    #fields.hasAnyErrors()는 유효성 검증에 실패한 오류 메시지를 저장하고 있음 thymeleaf method
+		<div th:each="err : ${#fields.allErrors()}" th:text="${err}"></div>
+	</div>
+	-->
+	
+	
+<!--  	
+		<div class="alert alert-danger" role="alert" th:if="${#fields.hasAnyErrors()}">
+            <div th:each="err : ${#fields.allErrors()}" th:text="${err}" />유효성 검사 돌면서 걸린 거 다 찍어
+        </div>
+        fragment로 만듦
+-->
+		<div th:replace="~{/question/form_errors :: formErrorsFragment}"> </div>
+	
+		<div class="mb-3">
+			<label for="subject" class="form-label">제목</label>
+			<!-- th:field 속성 thymeleaf로 설정하게 되면 상태관리 쉬워져(이게 완전 중요한 기능) id, name, value가 모두 자동으로 생성 -->
+			
+			<!-- <input type="text"name="subject" id="subject" class="form-control"> -->
+			<input type="text" th:field="*{subject}" class="form-control">
+		</div>
+		<div class="mb-3">
+			<label for="content" class="form-label">내용</label>
+			<!-- <textarea name="content" id="content" class="form-control" rows="10"></textarea> -->
+			<textarea th:field="*{content}" class="form-control" rows="10"></textarea>
+		</div>
+		<input type="submit" value="저장하기" class="btn btn-primary my-2">
+	</form>
+
+</div>
+
+</html>

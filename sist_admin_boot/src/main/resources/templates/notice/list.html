@@ -95,21 +95,7 @@ $(window).load(function() {
 
 <script src="/js/manage_viewport.js"></script>
 
-<script>
-function groupDelete() {	
-	if ( isSeleted(document.frm.no) ){
-		document.frm.submit();
-	} else {
-		alert("삭제할 항목을 하나 이상 선택해 주세요.");
-	}
-}
 
-function goSearch() {
-	$("#searchForm").submit();
-}
-
-
-</script>
 </head>
 <body> 
 	
@@ -786,7 +772,9 @@ $(document).ready(function(){
 									1/9페이지
 								</span>
 							</div>
-							<form name="frm" id="frm" action="process.jsp" method="post">
+							<form name="frm" id="frm" method="post" action = "/notice/delete">
+								<!-- <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> -->
+								
 								<!-- property:관리자 관리목록입니다. -->
 								<div class="table_wrap">
 									<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="관리자 관리목록입니다.">
@@ -807,7 +795,8 @@ $(document).ready(function(){
 										<thead>
 											<tr>
 												<th scope="col" class="first">
-													<label class="b_first_c"><input type="checkbox" name="allChk" id="allChk" onClick="check(this, document.frm.no)"/>
+													<label class="b_first_c">
+													<input type="checkbox" name="allChk" id="allChk" onClick="check(this, document.frm.no)"/>
 													<i></i>
 													</label>
 												</th>
@@ -816,13 +805,10 @@ $(document).ready(function(){
 												번호
 												</th>
 												
-												 
 												<th scope="col">
 												<!-- property:제목 -->
 												제목
 												</th> 
-												
-												
 												
 												<th scope="col">
 												<!-- property:작성자 -->
@@ -846,8 +832,7 @@ $(document).ready(function(){
 											<tr th:each="notice, loop : ${paging}">
 												<td class="first">
 													<label class="b_nor_c">
-														<input type="checkbox" th:value="${notice.id}" name="no" id="no"/><!-- value 필요없으면 빼 -->
-														<!-- <input th:text="${notice.id}"  type="checkbox" name="no" id="no" value="90"/> -->
+														<input class="notice-checkbox" type="checkbox" th:value="${notice.id}"/>
 														<i></i>
 													</label>
 												</td>
@@ -873,9 +858,8 @@ $(document).ready(function(){
 													<a th:href="@{|/notice/detail/${notice.id}|}" ></a>
 												</td>
 												
-												<!-- 왜 출력 안됨? -->
 												<!-- 조회수 -->
-												<td class="last" th:text="${notice.view}"></td>
+												<td class="last" th:text="${notice.viewCount}"></td>
 												
 											</tr>
 											<!-- 타임리프 END -->
@@ -926,7 +910,7 @@ $(document).ready(function(){
 							<div class="btns_wrap list">
 								<div class="pull-left">
 									<!-- property:삭제 -->
-									<a class="btns btns_red" href="#" onclick="groupDelete();">삭제</a>
+									<a id="delete" th:text="삭제" class="btns btns_red delete" href="javascript:void(0);" th:data-uri="@{/notice/delete}"></a>
 								</div>
 								<div class="pull-right">
 									<!-- property:글쓰기 -->
@@ -985,7 +969,48 @@ $(document).ready(function(){
 <!-- /#wrapper -->
 
 
-	<!-- JavaScript -->
+	<!-- JavaScript -->	
+	<script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", function () {
+	        // 그룹 삭제 버튼 로직
+	        const deleteButton = document.getElementById("delete");
+	        const form = document.getElementById("frm");
+	
+	        if (!deleteButton || !form) {
+	            console.error("삭제 버튼 또는 폼이 존재하지 않습니다.");
+	            return;
+	        }
+	
+	        deleteButton.addEventListener("click", function () {
+	            // 선택된 체크박스 가져오기
+	            const selectedCheckboxes = document.querySelectorAll(".notice-checkbox:checked");
+	
+	            if (selectedCheckboxes.length === 0) {
+	                alert("삭제할 항목을 선택해 주세요.");
+	                return;
+	            }
+	
+	            // 삭제 확인
+	            if (confirm("선택한 항목을 삭제하시겠습니까?")) {
+	                // 기존 체크박스 값을 숨겨진 필드로 추가
+	                selectedCheckboxes.forEach((checkbox) => {
+	                    const hiddenInput = document.createElement("input");
+	                    hiddenInput.type = "hidden";
+	                    hiddenInput.name = "id";
+	                    hiddenInput.value = checkbox.value;
+	                    form.appendChild(hiddenInput);
+	                });
+	
+	                form.submit(); // 폼 전송
+	                alert("글이 삭제 되었습니다.");
+	            }
+	        });
+	    });
+	</script>
+
+	
+	
+	
 	
     <!-- Bootstrap Core JavaScript -->
     

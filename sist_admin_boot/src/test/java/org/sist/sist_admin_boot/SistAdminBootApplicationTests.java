@@ -36,19 +36,22 @@ class SistAdminBootApplicationTests {
 	
 	// 공지사항 insert
 	
+	/*
 	@Test
 	void testJpa() {
 		
-		for (int i = 21; i <= 300; i++) {
+		for (int i = 1; i <= 300; i++) {
 			String title = "공지사항 : " + i;
 			String writer = "SIST";
-			String content = "공공";
-			String view = "0";
+			String content = "공지공지";
+			String email = "admin@naver.com";
+			Integer view = 0;
 			Boolean fix = false;
 			
-			this.noticeService.create(title, writer, content, view, fix);
+			this.noticeService.create(title, writer, content, email, view, fix);
 		} // for
 	}
+	*/
 	
 	
 
