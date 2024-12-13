@@ -763,13 +763,11 @@ $(document).ready(function(){
 								<span>
 									<strong>
 										총
-										83
-										개
+									<span th:text="${paging.totalElements}+'개'"></span>
 									</strong>
 								</span>
 								<!-- property:페이지 -->
-								<span>
-									1/9페이지
+								<span th:text="${paging.number + 1} + '/' +${paging.totalPages}+'페이지'">
 								</span>
 							</div>
 							<form name="frm" id="frm" method="post" action = "/notice/delete">
@@ -823,8 +821,6 @@ $(document).ready(function(){
 												<!-- property:조회수 -->
 												조회수
 												</th>
-												
-												
 											</tr>
 										</thead>
 										<tbody>
@@ -877,7 +873,7 @@ $(document).ready(function(){
 							    <!-- 페이징 처리 -->
 							    <div class="page">
 							        <!-- 이전 버튼 -->
-							        <a th:if="${pageMaker.prev}" th:href="@{|?page=${pageMaker.startPage-2}|}" class="b_num">
+							        <a th:if="${pageMaker.prev}" href="javascript:void(0)" th:href="@{|?page=${pageMaker.startPage-2}|}" class="b_num">
 							            <span>이전</span>
 							        </a>
 							        
@@ -897,7 +893,7 @@ $(document).ready(function(){
 							        </span>
 							        
 							        <!-- 다음 버튼 -->
-							        <a th:if="${pageMaker.next}" th:href="@{|?page=${pageMaker.endPage}|}" class="b_num">
+							        <a th:if="${pageMaker.next}" href="javascript:void(0)" th:href="@{|?page=${pageMaker.endPage}|}" class="b_num">
 							            <span>다음</span>
 							        </a>
 							    </div>
@@ -922,21 +918,20 @@ $(document).ready(function(){
 
 							<!-- search_wrap -->
 							<div class="search_wrap">
-								<form name="searchForm" id="searchForm" action="index.jsp" method="post">
+								<!-- search -->
+								<form name="searchForm" id="searchForm" action="/notice/list" method="get">
 									<div class="search">
-										
-										
-										
-										<select name="stype" title="검색을 선택해주세요." class="form-control"><!-- property:검색을 선택하세요. -->
-											<option value="all" ><!-- property:제목+내용 -->제목+내용</option>
-											<option value="name" ><!-- property:작성자 -->작성자</option>
-											<option value="email" ><!-- property:이메일 -->이메일</option>
-											<option value="contents" ><!-- property:내용 -->내용</option>
+										<select name="type" title="검색을 선택해주세요." class="form-control"><!-- property:검색을 선택하세요. -->
+											<option value="tc" th:selected='${param.type eq "tc"}'><!-- property:제목+내용 -->제목+내용</option>
+											<option value="w"  th:selected='${param.type eq "w"}'><!-- property:작성자 -->작성자</option>
+											<option value="e"  th:selected='${param.type eq "e"}'><!-- property:이메일 -->이메일</option>
+											<option value="c"  th:selected='${param.type eq "c"}'><!-- property:내용 -->내용</option>
 										</select>
 										<!-- property:검색할 내용을 입력해주세요. -->
-										<input type="text" name="sval" value="" title="검색할 내용을 입력해주세요." class="form-control input_text"/>
+										<input type="text" id="kw" name="kw" th:value="${kw}" title="검색할 내용을 입력해주세요." class="form-control input_text"/>
 										<!-- property:검색 -->
-										<input type="submit" value="검색" class="form-control input_btn"/>
+										<input type="submit"  href="javascript:void(0)" th:value="검색" class="form-control input_btn" id="btn_search"/>
+										<input type="hidden" id="page" name="page" th:value="${paging.number}">
 									</div>
 								</form>
 								<!-- //search --> 
@@ -972,7 +967,6 @@ $(document).ready(function(){
 	<!-- JavaScript -->	
 	<script type="text/javascript">
     document.addEventListener("DOMContentLoaded", function () {
-	        // 그룹 삭제 버튼 로직
 	        const deleteButton = document.getElementById("delete");
 	        const form = document.getElementById("frm");
 	
@@ -982,7 +976,6 @@ $(document).ready(function(){
 	        }
 	
 	        deleteButton.addEventListener("click", function () {
-	            // 선택된 체크박스 가져오기
 	            const selectedCheckboxes = document.querySelectorAll(".notice-checkbox:checked");
 	
 	            if (selectedCheckboxes.length === 0) {
@@ -990,9 +983,7 @@ $(document).ready(function(){
 	                return;
 	            }
 	
-	            // 삭제 확인
 	            if (confirm("선택한 항목을 삭제하시겠습니까?")) {
-	                // 기존 체크박스 값을 숨겨진 필드로 추가
 	                selectedCheckboxes.forEach((checkbox) => {
 	                    const hiddenInput = document.createElement("input");
 	                    hiddenInput.type = "hidden";
@@ -1001,11 +992,32 @@ $(document).ready(function(){
 	                    form.appendChild(hiddenInput);
 	                });
 	
-	                form.submit(); // 폼 전송
+	                form.submit();
 	                alert("글이 삭제 되었습니다.");
 	            }
 	        });
 	    });
+	</script>
+	
+	<!-- 찾기(검색) 버튼 처리 -->
+	<script type='text/javascript'>
+	document.addEventListener('DOMContentLoaded', function() {
+	    const page_elements = document.getElementsByClassName("b_num");
+	    Array.from(page_elements).forEach(function(element) {
+	        element.addEventListener('click', function() {
+	            document.getElementById('page').value = this.dataset.page;
+	            document.getElementById('searchForm').submit();
+	        });
+	    });
+	
+	    // 검색 버튼 클릭 이벤트
+	    const btn_search = document.getElementById("btn_search");
+	    btn_search.addEventListener('click', function(event) {
+	        event.preventDefault(); // 기본 폼 제출 동작 방지
+	        document.getElementById('page').value = 0; // 검색 시 페이지 번호 초기화
+	        document.getElementById('searchForm').submit();
+	    });
+	});
 	</script>
 
 	

@@ -1,0 +1,4 @@
+<div th:fragment="formErrorsFragment" class="alert alert-danger" role="alert"
+	th:if="${#fields.hasAnyErrors()}">
+    <div th:each="err : ${#fields.allErrors()}" th:text="${err}" /><!-- 유효성 검사 돌면서 걸린 거 다 찍어 -->
+</div>

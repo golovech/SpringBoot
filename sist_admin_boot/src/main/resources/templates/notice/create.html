@@ -1281,7 +1281,7 @@ $(document).ready(function(){
 				</div>
 				<div class="panel-wrapper collapse in">
 					<div class="panel-body">
-						<form method="post"  th:object="${noticeForm}" name="frm" id="frm" enctype="multipart/form-data">
+						<form method="post" th:object="${noticeForm}" name="frm" id="frm" enctype="multipart/form-data">
 							<!-- <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> -->
 							<!-- property:관리자 관리 기본내용입니다. -->
 							<div class="table_wrap table_block align_left">
@@ -1371,26 +1371,24 @@ $(document).ready(function(){
 											</td>
 										</tr>
 										
+											<!-- property:첨부파일 -->
+											<tr>
+												<th scope="row"><label for="">첨부파일</label></th>
+												<td colspan="3" id="useFile" class="file_add">
+													<!-- property:첨부파일을 업로드 해주세요. -->	
+													<input type="file"  th:field="*{uploadFile}" class="input50p" style="display:inline-block;" title="첨부파일을 업로드 해주세요." />
+													<!-- <input type="file"  th:field="*{uploadFile}" id="filenames1" name="filenames1" class="input50p" style="display:inline-block;" title="첨부파일을 업로드 해주세요." /> -->
+													<!-- property:추가 -->
+													<span class="btns_wrap">
+													<a class="btns btns_blue" href="javascript:;" id="addFile">추가</a>
+													<!-- property:제거 -->
+													<a class="btns btns_blue" href="javascript:;" id="delFile">제거</a>
+													</p>	
+													</span>
+												</td>
+											</tr>
+											<!-- // property:첨부파일 -->
 											
-												<tr>
-													<!-- property:첨부파일 -->
-													<th scope="row"><label for="">첨부파일</label></th>
-													<td colspan="3" id="useFile" class="file_add">
-														<!-- property:첨부파일을 업로드 해주세요. -->	
-														<input type="file" id="filenames1" name="filenames1" class="input50p" style="display:inline-block;" title="첨부파일을 업로드 해주세요." />
-														<!-- property:추가 -->
-														<span class="btns_wrap">
-														<a class="btns btns_blue" href="javascript:;" id="addFile">추가</a>
-														<!-- property:제거 -->
-														<a class="btns btns_blue" href="javascript:;" id="delFile">제거</a>
-														</p>	
-														</span>
-													</td>
-												</tr>
-											
-										
-										
-										
 									</tbody>
 								</table>
 							</div>
@@ -1403,7 +1401,7 @@ $(document).ready(function(){
 							<div class="btns_wrap">
 								<div class="pull-left">
 									<!-- property:목록 -->
-									<a class="btns btns_blue_line">목록</a>
+									<a th:href="@{/notice/list}" class="btns btns_blue_line">목록</a>
 								</div>
 								<div class="pull-right">
 									<!-- property:저장 -->
@@ -1440,6 +1438,44 @@ $(document).ready(function(){
 
 
 	<!-- JavaScript -->
+	<script type="text/javascript">
+	document.addEventListener("DOMContentLoaded", function () {
+	
+	    const addFileButton = document.getElementById("addFile");
+	    const delFileButton = document.getElementById("delFile");
+	    const useFileContainer = document.getElementById("useFile");
+	
+	    // 파일 입력 추가
+	    addFileButton.addEventListener("click", function () {
+	        // 생성할 파일 입력 필드
+	        const fileInputWrapper = document.createElement("div");
+	        fileInputWrapper.className = "file-input-wrapper";
+	        
+	        const fileInput = document.createElement("input");
+	        fileInput.type = "file";
+	        fileInput.name = "filenames" + (useFileContainer.children.length + 1); // 고유한 name 설정
+	        fileInput.className = "input50p";
+	        fileInput.style.display = "inline-block";
+	        fileInput.title = "첨부파일을 업로드 해주세요.";
+	
+	        // 새로 추가한 필드를 컨테이너에 추가
+	        fileInputWrapper.appendChild(fileInput);
+	        useFileContainer.appendChild(fileInputWrapper);
+	    });
+	
+	    // 파일 입력 제거
+	    delFileButton.addEventListener("click", function () {
+	        const wrappers = useFileContainer.getElementsByClassName("file-input-wrapper");
+	        if (wrappers.length > 0) {
+	            useFileContainer.removeChild(wrappers[wrappers.length - 1]); // 마지막 파일 입력 필드 삭제
+	        } else {
+	            alert("최소 하나의 파일 입력은 필요합니다.");
+	        }
+	    });
+	});
+	
+	</script>
+	
 	
     <!-- Bootstrap Core JavaScript -->
     

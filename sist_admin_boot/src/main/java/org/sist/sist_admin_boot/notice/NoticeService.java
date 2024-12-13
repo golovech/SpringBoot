@@ -14,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,8 @@ public class NoticeService {
 			String writer, 
 			String email,
 			Integer viewCount,
-			Boolean fix
+			Boolean fix,
+			String filePath
 			) {
 		Notice notice = new Notice();
 		notice.setTitle(title);
@@ -40,8 +42,9 @@ public class NoticeService {
 		notice.setWriter(writer);
 		notice.setEmail(email);
 		notice.setViewCount(viewCount);
-		notice.setFix(false);
+		notice.setFix(fix != null && fix);
 		notice.setCreateDate(LocalDateTime.now());
+		notice.setFilePath(filePath);
 		this.noticeRepository.save(notice);
 	}
 	
@@ -51,14 +54,16 @@ public class NoticeService {
 		return this.noticeRepository.findAll();
 	}
 	
-	// 공지사항 목록 보기 (페이징 O)
-	public Page<Notice> getList(int page){
+	// 공지사항 목록 보기 (검색 + 페이징 O)
+	public Page<Notice> getList(int page, String type, String keyword){
 		
 		List<Sort.Order> sorts = new ArrayList<>();
 		sorts.add(Sort.Order.desc("id"));
 		
 		Pageable pageable = PageRequest.of(page, 10, Sort.by(sorts));
-		return this.noticeRepository.findAll(pageable);
+		
+		String [] types = type.split("");
+ 		return this.noticeRepository.searchAll(types, keyword, pageable);
 	}
 	
 	

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+
+<!-- <link rel="stylesheet" type="text/css" href="/style.css"> 정적자원은 /만으로 자동으로 static까지를 경로로 잡혀 그게 root directory야-->
+<!-- <link rel="stylesheet" type="text/css" th:href="@{/style.css}"> -->
+<link rel="stylesheet" type="text/css" th:href= "@{/bootstrap/bootstrap.min.css}" />
+</head>
+<body>
+<h1>/question/detail.html</h1>
+<div class="container my-3">
+    <!-- 질문 -->
+    <h2 class="border-bottom py-2" th:text="${question.subject}"></h2>
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;" th:text="${question.content}"></div>
+            <div class="d-flex justify-content-end">
+                <div class="badge bg-light text-dark p-2 text-start">
+                    <div th:text="${#temporals.format(question.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 답변의 갯수 표시 -->
+    <h5 class="border-bottom my-3 py-2" 
+        th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다.|"></h5>
+    <!-- 답변 반복 시작 -->
+    <div class="card my-3" th:each="answer : ${question.answerList}">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;" th:text="${answer.content}"></div>
+            <div class="d-flex justify-content-end">
+                <div class="badge bg-light text-dark p-2 text-start">
+                    <div th:text="${#temporals.format(answer.createDate, 'yyyy-MM-dd HH:mm')}"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 답변 반복 끝  -->
+    <!-- 답변 작성 -->
+    <form th:action="@{|/answer/create/${question.id}|}" method="post" class="my-3">
+        <textarea name="content" id="content" rows="10" class="form-control"></textarea>
+        <input type="submit" value="답변등록" class="btn btn-primary my-2">
+    </form>
+</div>
+</body>
+<!--
+<body>
+   <h1>/question/detail.html</h1>
+   
+   <h1 th:text="${question.subject}"></h1>
+   <div th:text="${question.content}"></div>
+	
+	그 질문에 대한 답변 표시
+	#lists.size() thymeleaf가 제공하는 기능
+	<h5 th:text="|${question.answerList.size()}개의 답변이 있습니다~!|"></h5>
+	<h5 th:text="|${#lists.size(question.answerList)}개의 답변이 있습니다~!|"></h5>
+	<div>
+		<ul>
+			<li th:each=" answer : ${question.answerList}" th:text="${answer.content}"></li>
+		</ul>
+	</div> 
+	
+   <form action="/answer/create/질문id" method="post">
+   ||는 EL표현식과 문자열을 같이 넣을 때 사용
+   <form th:action="@{|/answer/create/${question.id}|}" method="post">"@{|여기에 넣어|}"
+   		<textarea rows="15" name="content"></textarea>
+   		<input type="submit" value="답변 등록">
+   		
+   </form>
+</body>
+ -->
+ </html>

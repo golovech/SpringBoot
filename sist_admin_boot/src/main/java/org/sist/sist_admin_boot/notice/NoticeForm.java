@@ -36,7 +36,7 @@ public class NoticeForm {
 	@NotEmpty(message = "이메일 입력은 필수입니다.")
 	private String email;
 	
-	//private MultipartFile uploadFile;
+	private MultipartFile uploadFile;
 	
     //@Column(name = "fix", nullable = false)
 	//@NotNull(message = "fix는 필수 입력 값입니다.")

@@ -36,13 +36,13 @@ public class Notice {
 	@JsonFormat(pattern = "yyyy-MM-dd")
 	private LocalDateTime createDate;
 	
-	@Column(columnDefinition = "integer default 0", nullable = false)
+	@Column(columnDefinition = "integer default 0")
 	private Integer viewCount;
 	
 	private String email;
 	
-	// 이건 일단 출력부터하고 나중에 해보자
-	//private MultipartFile uploadFile;
+	
+	private String filePath;
 	
 	private Boolean fix;
 	

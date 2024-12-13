@@ -1,9 +1,13 @@
 package org.sist.sist_admin_boot.notice;
 
+import java.io.File;
 import java.util.List;
+import java.util.UUID;
 
 import org.sist.sist_admin_boot.page.Criteria;
 import org.sist.sist_admin_boot.page.PageDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,7 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +32,11 @@ public class NoticeController {
 
 	private final NoticeService noticeService;
 	
+	// 첨부파일 업로드 경로
+	@Value("${file.upload-dir}") // properties에 저장된 경로의 파일을 가져옴.
+    private String uploadDir;
+	
+	
 	
 	// 공지사항 등록하기
 	@GetMapping("/create")
@@ -35,7 +47,9 @@ public class NoticeController {
 	@PostMapping("/create")
 	public String noticeCreate(
 			@Valid NoticeForm noticeForm,
-			BindingResult bindingResult) {
+			BindingResult bindingResult,
+			HttpServletRequest request
+			) {
 		// 1. 유효성 검사, 에러 있는지 확인
 		if (bindingResult.hasErrors()) {
 		    System.out.println("유효성 검사 에러!!");
@@ -44,6 +58,39 @@ public class NoticeController {
 		    });
 		    return "notice/create";
 		} // if
+		
+		// 첨부파일 작업
+		MultipartFile file = noticeForm.getUploadFile();
+		String savedFilePath = null;
+		
+		if(file != null & !file.isEmpty()) {
+			try {
+				 String uploadPath  = request.getServletContext().getRealPath("/static/upload/notice");
+		            File dir = new File(uploadPath );
+		            if (!dir.exists()) {
+		                dir.mkdirs(); // 디렉토리가 없으면 생성
+		            }
+				
+				String originalFileName = file.getOriginalFilename();
+				String savedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
+				
+				// 파일 저장경로
+				File savedFile = new File(uploadPath , savedFileName);
+				file.transferTo(savedFile);
+				
+				savedFilePath = "/static/upload/notice/" + savedFileName; // 저장경로
+				
+				System.out.println("savedFilePath : " + uploadPath);
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+				return "notice/create";
+				
+			}
+		}
+		
+		
+		
 		// 에러 없으면
 		String title = noticeForm.getTitle();
 		String writer = noticeForm.getWriter();
@@ -51,18 +98,25 @@ public class NoticeController {
 		String email = noticeForm.getEmail();
 		Integer viewCount = noticeForm.getViewCount();
 		Boolean fix = noticeForm.getFix();
-		this.noticeService.create(title, content, writer, email, viewCount, fix);
+		MultipartFile filePath = noticeForm.getUploadFile(); // 파일
+		
+		this.noticeService.create(title, content, writer, email, viewCount, fix, savedFilePath);
 		
 		return "redirect:/notice/list";
 	}
 	
-	// 공지사항 리스트 보기 (페이징 + 페이징블럭)
+	// 공지사항 리스트 + 검색기능 (페이징 + 페이징블럭)
 	@GetMapping("list")
 	public void list(Model model, 
-			@RequestParam(value="page", defaultValue = "0") int page) {
+			@RequestParam(value="page", defaultValue = "0") int page,
+			@RequestParam(value="type", defaultValue = "s") String type,
+			@RequestParam(value="kw", defaultValue = "") String keyword) {
 		
-		Page<Notice> paging = this.noticeService.getList(page);
+		Page<Notice> paging = this.noticeService.getList(page, type, keyword);
+		int startPage = (page / 10) * 10;
+		int endPage =  Math.min(startPage + 9, paging.getTotalPages() - 1);
 		model.addAttribute("paging", paging);
+		model.addAttribute("kw", keyword);
 		
 		Criteria criteria = new Criteria(page+1, 10 ); 
         int total = (int)paging.getTotalElements();
