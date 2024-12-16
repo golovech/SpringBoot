@@ -20,8 +20,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
-//@Transactional // 자동트랜잭션 
-@RequiredArgsConstructor // final
+@Transactional
+@RequiredArgsConstructor
 public class NoticeService {
 
 	private final NoticeRepository noticeRepository;
@@ -41,13 +41,12 @@ public class NoticeService {
 		notice.setContent(content);
 		notice.setWriter(writer);
 		notice.setEmail(email);
-		notice.setViewCount(viewCount);
+		notice.setViewCount(viewCount.valueOf(0));
 		notice.setFix(fix != null && fix);
 		notice.setCreateDate(LocalDateTime.now());
 		notice.setFilePath(filePath);
 		this.noticeRepository.save(notice);
 	}
-	
 	
 	// 공지사항 목록 보기 (페이징 X)
 	public List<Notice> getList(){
@@ -66,6 +65,10 @@ public class NoticeService {
  		return this.noticeRepository.searchAll(types, keyword, pageable);
 	}
 	
+	// 고정된 공지사항 보기
+	public List<Notice> getFixedNotices() {
+	    return noticeRepository.findFixedNotices();
+	}
 	
 	// 공지사항 상세보기
 	public Notice getNotice(Integer id) {
@@ -93,14 +96,12 @@ public class NoticeService {
 		this.noticeRepository.delete(notice);
 	}
 	
-	// 공지 삭제 (id로 찾기)  되나???
+	// 공지 삭제/체크박스 (list.html에서 삭제 / id로 찾기)
 	public List<Notice> deleteList(List<Integer> id) {
-		List<Notice> deleteList = this.noticeRepository.findAllById(id); // 삭제할 공지 찾기
-		noticeRepository.deleteAllById(id); // 삭제 실행
+		List<Notice> deleteList = this.noticeRepository.findAllById(id);
+		noticeRepository.deleteAllById(id); 
 		return deleteList;
 	}
-	
-	
 	
 	
 }

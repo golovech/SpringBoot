@@ -21,7 +21,6 @@ implements NoticeSearch{
 	@Override
 	public Page<Notice> searchAll(String[] types, String keyword, Pageable pageable) {
 		
-		// Q도메인 객체 생성
 		QNotice notice = QNotice.notice;       
 		// SELECT ... FROM question
 		JPQLQuery<Notice> query = from(notice);

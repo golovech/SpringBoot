@@ -41,7 +41,6 @@ public class Notice {
 	
 	private String email;
 	
-	
 	private String filePath;
 	
 	private Boolean fix;

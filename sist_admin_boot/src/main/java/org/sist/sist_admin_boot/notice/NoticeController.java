@@ -32,34 +32,72 @@ public class NoticeController {
 
 	private final NoticeService noticeService;
 	
-	// 첨부파일 업로드 경로
-	@Value("${file.upload-dir}") // properties에 저장된 경로의 파일을 가져옴.
+	// 첨부파일 업로드
+	@Value("${file.upload-dir}")
     private String uploadDir;
-	
-	
 	
 	// 공지사항 등록하기
 	@GetMapping("/create")
 	public void noticeCreate(NoticeForm noticeForm) {
 	}
 	
-	// 공지사항 등록(유효성 검사 자동)
+	
+	// 첨부파일 작업
 	@PostMapping("/create")
 	public String noticeCreate(
-			@Valid NoticeForm noticeForm,
-			BindingResult bindingResult,
-			HttpServletRequest request
-			) {
-		// 1. 유효성 검사, 에러 있는지 확인
-		if (bindingResult.hasErrors()) {
-		    System.out.println("유효성 검사 에러!!");
-		    bindingResult.getAllErrors().forEach(error -> {
-		        System.out.println(error.getDefaultMessage());
-		    });
-		    return "notice/create";
-		} // if
+	        @Valid NoticeForm noticeForm,
+	        BindingResult bindingResult,
+	        HttpServletRequest request
+	) {
+	    if (bindingResult.hasErrors()) {
+	        return "notice/create";
+	    }
+
+	    MultipartFile file = noticeForm.getUploadFile();
+	    String savedFilePath = null;
+
+	    if (file != null && !file.isEmpty()) {
+	        try {
+	            // 실제 파일 저장 경로 가져오기
+	        	String uploadDir = request.getServletContext().getRealPath("/upload/notice/");
+	            // String uploadDir = "C:/Users/User/AppData/Local/Temp/tomcat-docbase/static/upload/notice/";
+	            File dir = new File(uploadDir);
+	            if (!dir.exists()) {
+	                dir.mkdirs(); // 경로가 없으면 생성
+	            }
+
+	            // 저장 파일 이름 생성
+	            String originalFileName = file.getOriginalFilename();
+	            String savedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
+
+	            // 파일 저장
+	            File savedFile = new File(dir, savedFileName);
+	            file.transferTo(savedFile);
+
+	            // 브라우저 접근 가능한 URL 경로 설정
+	            savedFilePath = "/upload/notice/" + savedFileName;
+
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return "notice/create";
+	        }
+	    }
+
+	    this.noticeService.create(
+	            noticeForm.getTitle(),
+	            noticeForm.getContent(),
+	            noticeForm.getWriter(),
+	            noticeForm.getEmail(),
+	            noticeForm.getViewCount(),
+	            noticeForm.getFix(),
+	            savedFilePath
+	    );
+
+	    return "redirect:/notice/list";
+	}
+
 		
-		// 첨부파일 작업
+		/*
 		MultipartFile file = noticeForm.getUploadFile();
 		String savedFilePath = null;
 		
@@ -70,7 +108,6 @@ public class NoticeController {
 		            if (!dir.exists()) {
 		                dir.mkdirs(); // 디렉토리가 없으면 생성
 		            }
-				
 				String originalFileName = file.getOriginalFilename();
 				String savedFileName = UUID.randomUUID().toString() + "_" + originalFileName;
 				
@@ -78,19 +115,14 @@ public class NoticeController {
 				File savedFile = new File(uploadPath , savedFileName);
 				file.transferTo(savedFile);
 				
-				savedFilePath = "/static/upload/notice/" + savedFileName; // 저장경로
-				
+				savedFilePath = "/upload/notice/" + savedFileName; // 저장경로
 				System.out.println("savedFilePath : " + uploadPath);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 				return "notice/create";
-				
 			}
 		}
-		
-		
-		
 		// 에러 없으면
 		String title = noticeForm.getTitle();
 		String writer = noticeForm.getWriter();
@@ -104,6 +136,8 @@ public class NoticeController {
 		
 		return "redirect:/notice/list";
 	}
+	*/
+	
 	
 	// 공지사항 리스트 + 검색기능 (페이징 + 페이징블럭)
 	@GetMapping("list")
@@ -113,25 +147,30 @@ public class NoticeController {
 			@RequestParam(value="kw", defaultValue = "") String keyword) {
 		
 		Page<Notice> paging = this.noticeService.getList(page, type, keyword);
+		List<Notice> fixedNotices = this.noticeService.getFixedNotices();
+		
 		int startPage = (page / 10) * 10;
 		int endPage =  Math.min(startPage + 9, paging.getTotalPages() - 1);
-		model.addAttribute("paging", paging);
-		model.addAttribute("kw", keyword);
 		
+		model.addAttribute("fixedNotices", fixedNotices); // 고정된 공지사항
+	    model.addAttribute("paging", paging); // 일반 공지사항
+	    model.addAttribute("kw", keyword);
+	    
 		Criteria criteria = new Criteria(page+1, 10 ); 
         int total = (int)paging.getTotalElements();
         model.addAttribute("pageMaker",  new PageDTO(criteria, total));
 	}
 	
+	
 	// 공지사항 상세보기
 	@GetMapping("/detail/{id}")
 	public String detail(@PathVariable("id") Integer id, Model model) {
-		Notice notice = this.noticeService.getNotice(id);
-		model.addAttribute("notice", notice);
-		return "notice/detail"; // html
+	    Notice notice = this.noticeService.getNotice(id);
+	    model.addAttribute("notice", notice);
+	    model.addAttribute("fileUrl", notice.getFilePath()); // 저장된 URL 그대로 전달
+	    return "notice/detail";
 	}
-	
-	
+
 	// 수정하기 버튼 클릭시
 	@GetMapping("/modify/{id}")
 	public String noticeModify(
@@ -146,7 +185,6 @@ public class NoticeController {
 		noticeForm.setContent(notice.getContent());
 		noticeForm.setEmail(notice.getEmail());
 		noticeForm.setViewCount(notice.getViewCount());
-		//noticeForm.setCreateDate(notice.getCreateDate());
 		noticeForm.setFix(notice.getFix());
 		
 		return "/notice/create";

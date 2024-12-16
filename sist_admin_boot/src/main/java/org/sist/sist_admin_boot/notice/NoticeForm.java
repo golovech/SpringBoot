@@ -13,8 +13,6 @@ import lombok.Builder.Default;
 import lombok.Getter;
 import lombok.Setter;
 
-// DTO == create 할때 입력하는 값
-
 @Setter
 @Getter
 public class NoticeForm {
@@ -27,8 +25,6 @@ public class NoticeForm {
 	
 	private String content;
 	
-	// private LocalDateTime createDate;
-	
 	private Integer viewCount;
 	
 	
@@ -38,8 +34,8 @@ public class NoticeForm {
 	
 	private MultipartFile uploadFile;
 	
-    //@Column(name = "fix", nullable = false)
-	//@NotNull(message = "fix는 필수 입력 값입니다.")
-	private Boolean fix; // 이건 어떻게 줘야할까?
+    @Column(name = "fix", nullable = false)
+	@NotNull(message = "fix는 필수 입력 값입니다.")
+	private Boolean fix; 
 	
 }

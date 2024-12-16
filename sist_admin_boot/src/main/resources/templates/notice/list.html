@@ -773,22 +773,16 @@ $(document).ready(function(){
 							<form name="frm" id="frm" method="post" action = "/notice/delete">
 								<!-- <input type="hidden" name="_csrf" th:value="${_csrf.token}" /> -->
 								
-								<!-- property:관리자 관리목록입니다. -->
+								
 								<div class="table_wrap">
 									<table width="100%" border="0" cellspacing="0" cellpadding="0" summary="관리자 관리목록입니다.">
 										<colgroup>
 											<col class="t_w5" />
 											<col class="t_w8" />
-											
-											
 											<col class="" />
-											
-											
 											<col class="t_w11" />
 											<col class="t_w14 date_t" />
-											
 											<col class="t_w8" />
-											
 										</colgroup>
 										<thead>
 											<tr>
@@ -824,21 +818,16 @@ $(document).ready(function(){
 											</tr>
 										</thead>
 										<tbody>
-											<!-- 타임리프 start -->
-											<tr th:each="notice, loop : ${paging}">
+											<!-- 고정된 공지사항 -->
+											<tr th:each="notice, loop : ${fixedNotices}">
 												<td class="first">
 													<label class="b_nor_c">
 														<input class="notice-checkbox" type="checkbox" th:value="${notice.id}"/>
 														<i></i>
 													</label>
 												</td>
-												
 												<td>
-													<!-- 이거 이상함. -->
-													<!-- property:공지 fix true면 공지 띄우고, false면 글번호띄우기 -->
-													<span th:if="${notice.fix} eq true" class="noti_icon">공지</span>
-													<span th:if="${notice.fix} eq false" th:text="${notice.id}" class="noti_icon"></span>
-													<!-- property:공지 fix true면 공지 띄우고, false면 글번호띄우기 -->
+													<span class="noti_icon">공지</span>
 												</td>
 												
 												<!-- title 제목 -->
@@ -858,8 +847,36 @@ $(document).ready(function(){
 												<td class="last" th:text="${notice.viewCount}"></td>
 												
 											</tr>
-											<!-- 타임리프 END -->
-										
+											
+											<!-- 일반 공지사항 -->
+											<tr th:each="notice, loop : ${paging}"  th:if="${notice.fix} eq false">
+												<td class="first">
+													<label class="b_nor_c">
+														<input class="notice-checkbox" type="checkbox" th:value="${notice.id}"/>
+														<i></i>
+													</label>
+												</td>
+												
+												<td>
+													<span th:text="${notice.id}" class="noti_icon"></span>
+												</td>
+												
+												<!-- title 제목 -->
+												<td style='cursor:pointer;' class="title">
+													<a th:href="@{|/notice/detail/${notice.id}|}" th:text="${notice.title}"></a>
+												</td>
+												
+												<!-- writer 작성자 : 기본 SIST 표기 -->
+												<td th:text="SIST"></td>
+												
+												<!-- createDate 작성일 : 년월일만 표기 -->
+												<td th:text="${#temporals.format(notice.createDate, 'yyyy-MM-dd')}" class="">
+													<a th:href="@{|/notice/detail/${notice.id}|}" ></a>
+												</td>
+												
+												<!-- 조회수 -->
+												<td class="last" th:text="${notice.viewCount}"></td>
+											</tr>
 										</tbody>
 									</table>
 								</div>

@@ -10,6 +10,7 @@ import org.sist.sist_admin_boot.notice.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 
 
@@ -36,22 +37,23 @@ class SistAdminBootApplicationTests {
 	
 	// 공지사항 insert
 	
-	/*
+	
 	@Test
 	void testJpa() {
 		
-		for (int i = 1; i <= 300; i++) {
+		for (int i = 1; i <= 500; i++) {
 			String title = "공지사항 : " + i;
-			String writer = "SIST";
-			String content = "공지공지";
+			String writer = "관리자";
+			String content = "공지사항 테스트!!";
 			String email = "admin@naver.com";
-			Integer view = 0;
+			Integer viewCount = 0;
 			Boolean fix = false;
+			String filePath = null;
 			
-			this.noticeService.create(title, writer, content, email, view, fix);
+			this.noticeService.create(title, writer, content, email, viewCount, fix, filePath);
 		} // for
 	}
-	*/
+	
 	
 	
 

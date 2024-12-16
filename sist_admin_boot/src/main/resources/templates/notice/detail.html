@@ -779,12 +779,12 @@ $(document).ready(function(){
 										<th scope="row"><label for=""><!-- property:작성일 -->작성일</label></th>
 										<td th:text="${#temporals.format(notice.createDate, 'yyyy-MM-dd HH:mm:ss')}" colspan="1" ></td>
 									</tr>
-									
-									
 									<tr>
-										<th scope="row"><label for=""><!-- property:TOP공지 -->TOP공지</label></th>
-										<td colspan="3"><span style='color:#ea1c5b'>공지 안 함</span></td>
-										<!-- 공지 수정해야함!! -->
+										<th scope="row"><label for="">TOP공지</label></th>
+										<td colspan="3">
+											<span style='color:#ea1c5b' th:if="${notice.fix} eq true" class="noti_icon">공지함</span>
+											<span style='color:#ea1c5b' th:if="${notice.fix} eq false" class="noti_icon">공지 안 함</span>
+										</td>
 									</tr>
 									
 									
@@ -809,10 +809,18 @@ $(document).ready(function(){
 										<td colspan="2">
 											<p style="text-align: center;"> <br>
 											</p>
-											<p style="text-align: center;">
-												<!-- 파일이 들어가면 됨 -->
-												<img src="/upload/editor/1703754030767_346.jpg" style="width: 50%;" /><br>
-											</p>
+											<p style="text-align: center;"></p>
+											
+												<!-- 첨부파일 출력 -->
+												<div th:if="${fileUrl != null}">
+												    <!-- 이미지 출력 -->
+												    <img th:src="${fileUrl}" alt="첨부파일" />
+												    <br>
+												    <!-- 다운로드 링크 -->
+												    <a th:href="${fileUrl}" download>첨부파일 다운로드</a>
+												</div>
+
+
 											
 											<p line-height:="1.5;" style="text-align: center; color: rgb(101, 102, 104);">
 												<span th:text="${notice.content}" style="font-size: 24px;">&lt; &gt;</span>
